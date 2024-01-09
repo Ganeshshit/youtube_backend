@@ -5,8 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon src/index.cjs"
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +16,8 @@
     "prettier": "^3.1.1"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "mongoose": "^8.0.3"
   }
