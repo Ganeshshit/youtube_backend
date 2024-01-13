@@ -3,18 +3,18 @@ import connectDB from "./src/db/index.js";
 import  App  from './src/app.js';
 
 
-dotenv.config({path:'./env'})
+dotenv.config({path:'./.env'})
+const MONGO_URI=process.env.MONGO_URI
 
 
-
-connectDB()
+connectDB(MONGO_URI)
 .then(()=>{
     App.on("error",(error)=>{
         console.log("error",error)
         throw error
     })
-    App.listen(process.env.PORT||8000,()=>{
-        console.log(`Server is running at port ${process.env.PORT||8000}`)
+    App.listen(process.env.PORT,()=>{
+        console.log(`Server is running at port ${process.env.PORT}`)
     })
 })
 .catch((err)=>{

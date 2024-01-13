@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-
+import dotenv from 'dotenv'
 import { DB_NAME } from "../constants.js";
-const MONGO_URI='mongodb+srv://ganesh:Ganesh123@cluster0.0zqnw8m.mongodb.net/'
-const connectDB = async () => {
+
+const connectDB = async (MONGO_URI) => {
   try {
     const connectionInstance = await mongoose.connect(
       `${MONGO_URI} / ${DB_NAME}`
