@@ -1,6 +1,7 @@
 import Router from "express";
-import { loginUser, registerUser } from "../controllers/user.controller.js";
+import { loginUser, logoutUser, registerUser } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
+import { veifyJWT } from "../middlewares/auth.middlewere.js";
 const router = Router();
 router.route("/register").post(
   upload.fields([
@@ -17,6 +18,13 @@ router.route("/register").post(
   ]),
   registerUser
 );
-router.route("/login").get(loginUser);
+router.route("/login").post(loginUser);
+
+
+
+// Private route
+
+
+router.route("/logout").post(veifyJWT,logoutUser)
 
 export default router;

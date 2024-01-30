@@ -1,7 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+const ACCESS_TOKEN_SECRET = "rlrvllvlkvmlmrlvlnklnii8508590fnlvlvlkld";
+const REFRESH_TOKE_SECRET = "lksjdckKLJKllklnkn";
+const REFRESH_TOKE_Expiry = "10d";
 
+const ACCESS_TOKEN_EXPIRY = "1d";
 const userSchema = new Schema(
   {
     userName: {
@@ -68,9 +72,9 @@ userSchema.methods.genarateAccessToken = function () {
       userName: this.userName,
       fullName: this.fullName,
     },
-    process.env.ACCESS_TOKEN_SECRET,
+    process.env.ACCESS_TOKEN_SECRET || ACCESS_TOKEN_SECRET,
     {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY || ACCESS_TOKEN_EXPIRY,
     }
   );
 };
@@ -80,9 +84,9 @@ userSchema.methods.genarateRefreshToken = function () {
       // !Payload
       _id: this._id,
     },
-    process.env.REFRESH_TOKE_SECRET,
+    process.env.REFRESH_TOKE_SECRET || REFRESH_TOKE_SECRET,
     {
-      expiresIn: process.env.REFRESH_TOKE_EXPIRY,
+      expiresIn: process.env.REFRESH_TOKE_EXPIRY || REFRESH_TOKE_Expiry,
     }
   );
 };
