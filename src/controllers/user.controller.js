@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import Jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 // Genarate Token
 const genarateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -175,15 +175,17 @@ const logoutUser = asyncHandler(async (req, res) => {
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
-
+  // console.log(incomingRefreshToken)
   if (incomingRefreshToken) {
     throw new ApiError(401, "Unauthorized Request");
   }
-  try {
-    const decodedToken = Jwt.verify(
+  // try {
+    const decodedToken = jwt.verify(
       incomingRefreshToken,
-      process.env.REFRESH_TOKEN_SECRET
+      process.env.REFRESH_TOKEN_SECRET||"lksjdckKLJKllklnkn"
+
     );
+    console.log(decodedToken)
     const user = User.findById(decodedToken?._id);
     if (!user) {
       throw new ApiError(401, "Invalid Refresh Token");
@@ -208,10 +210,12 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       }
     )
    )
-  } catch (error) {
-    throw new ApiError(401,error?.meassage,"Invalid")
+  // }
+  
+  // catch (error) {
+  //   throw new ApiError(401,error?.meassage||"Error are here","Invalid")
 
-  }
+  // }
 
 });
 
