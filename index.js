@@ -5,7 +5,7 @@ import  App  from './src/app.js';
 
 dotenv.config({path:'./.env'})
 const MONGO_URI=process.env.MONGO_URI
-
+const PORT=process.env.PORT||1000
 
 connectDB(MONGO_URI)
 .then(()=>{
@@ -13,7 +13,7 @@ connectDB(MONGO_URI)
         console.log("error",error)
         throw error
     })
-    App.listen(process.env.PORT,()=>{
+    App.listen(PORT,()=>{
         
         
         console.log(`Server is running at port ${process.env.PORT}`)
