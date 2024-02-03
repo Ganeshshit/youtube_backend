@@ -4,7 +4,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
-import mongoose, { Aggregate } from "mongoose";
+//import mongoose, { Aggregate } from "mongoose";
 // Genarate Token
 const genarateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -290,14 +290,15 @@ const updateUserAatar = asyncHandler(async (req, res) => {
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
+  console.log(username)
   if (!username?.trim()) {
-    throw ApiError(400, "UserName Misssing");
+    throw new ApiError(400, "UserName Misssing");
   }
 
   const chanel = await User.aggregate([
     {
       $match: {
-        username: username?.toLowerCase(),
+        userName: username?.toLowerCase(),
       },
     },
 
@@ -323,7 +324,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
           $size: "$subscribers",
         },
         channelsSubscribedToCount: {
-          $size: "subscribedTo",
+          $size: "$subscribedTo",
         },
         isSubscriber: {
           $cond: {
@@ -348,6 +349,19 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       },
     },
   ]);
+  if (!chanel?.length) {
+    throw new ApiError(404, "Chnel Not Found");
+  }
+  console.log(chanel[0])
+
+  return res
+    .status(200)
+    // .send({
+    //   succcess:true,
+    //   meassage:"Channel Found Sucesfully",
+    //   chanel
+    // })
+    .json(new ApiResponse(200, chanel[0], "User Found Sucess fully"));
 });
 
 // Get User Watch history
@@ -393,6 +407,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
       },
     },
   ]);
+
   return res
     .status(200)
     .json(
@@ -415,5 +430,4 @@ export {
   changeCurrentUserPassword,
   getCurrentUser,
   getWatchHistory,
-
 };
