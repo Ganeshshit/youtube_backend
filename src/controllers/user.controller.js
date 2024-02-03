@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import { Aggregate } from "mongoose";
 // Genarate Token
 const genarateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -287,6 +288,68 @@ const updateUserAatar = asyncHandler(async (req, res) => {
 
 // !Update Cover image
 
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+  if (!username?.trim()) {
+    throw ApiError(400, "UserName Misssing");
+  }
+
+  const chanel = await User.aggregate([
+    {
+      $match: {
+        username: username?.toLowerCase(),
+      },
+    },
+
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "chanel",
+        as: "subscribers",
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribedTo",
+      },
+    },
+    {
+      $addFields: {
+        subscribersCount: {
+          $size: "$subscribers",
+        },
+        channelsSubscribedToCount: {
+          $size: "subscribedTo",
+        },
+        isSubscriber: {
+          $cond: {
+            if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        fullName: 1,
+        username: 1,
+        subscribersCount: 1,
+        channelsSubscribedToCount: 1,
+        isSubscribed: 1,
+        avatar1: 1,
+        coverImage: 1,
+        email: 1,
+      },
+    },
+  ]);
+});
+
 export {
   registerUser,
   loginUser,
@@ -294,4 +357,5 @@ export {
   refreshAccessToken,
   updateUserAatar,
   updateAccoutDetails,
+  getUserChannelProfile
 };
