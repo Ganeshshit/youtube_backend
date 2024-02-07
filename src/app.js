@@ -17,7 +17,8 @@ App.use(express.static("public"))
 
 App.use(cookieParser())
 import userRouter from './routes/user.routes.js'
-
+import videoRouter from './routes/video.routes.js'
+import tweetRoute from './routes/tweet.routes.js'
 // Routes import
 
 
@@ -25,6 +26,9 @@ import userRouter from './routes/user.routes.js'
 
 App.use('/api/v1/users',userRouter) //go to user router ....
 
+App.use('/api/v1/videos',videoRouter)
+
+App.use('/api/v1/blog',tweetRoute)
 
 
 export  default App
